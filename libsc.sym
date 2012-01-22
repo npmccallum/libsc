@@ -1,4 +1,4 @@
-LIBSC_1 {
+LIBSC_0.1 {
 global:
         _sc_calloc;
         _sc_calloc0;

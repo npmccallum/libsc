@@ -13,7 +13,6 @@ AM_CFLAGS = \
         -Wshadow \
         -Wformat-security \
         -Wtype-limits \
-        -fvisibility=hidden \
         -ffunction-sections \
         -fdata-sections
 AM_LDFLAGS = \
