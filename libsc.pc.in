@@ -1,0 +1,11 @@
+prefix=@prefix@
+libdir=@libdir@
+includedir=@includedir@
+exec_prefix=@exec_prefix@
+ 
+Name: libsc
+Description: Relational memory management
+Version: @VERSION@
+Libs: -L${libdir} -lsc
+Cflags: -I${includedir}
+Libs.private: @LIBS@

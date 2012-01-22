@@ -1,0 +1,25 @@
+LIBSC_1 {
+global:
+        _sc_calloc;
+        _sc_calloc0;
+        _sc_resizea;
+        _sc_resizea0;
+        _sc_incref;
+        _sc_decref;
+        _sc_steal;
+        _sc_destructor_set;
+        sc_group;
+        sc_size;
+        sc_tag_set;
+        sc_tag_set_const;
+        sc_tag_get;
+        sc_strdup;
+        sc_strndup;
+        sc_asprintf;
+        sc_vasprintf;
+	
+local:
+	*;
+};
+
+
