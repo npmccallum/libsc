@@ -154,6 +154,7 @@ _sc_calloc(void *parent, size_t size, size_t count,
   memset(chnk, 0, sizeof(chunk));
 
   chnk->size = size * count;
+  chnk->name = (char*) tag;
   tmp = sc_incref(parent, chnk ? chnk + 1 : NULL);
 
   if (!tmp)
