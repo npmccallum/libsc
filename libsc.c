@@ -112,7 +112,7 @@ pop(link *lnk, chunk *chnk)
   }
 
 static void
-_sc_unlink(chunk *prnt, chunk *chld, bool bothsides)
+unlink(chunk *prnt, chunk *chld, bool bothsides)
 {
   if (!chld)
     return;
@@ -132,7 +132,7 @@ _sc_unlink(chunk *prnt, chunk *chld, bool bothsides)
     /* Second loop: remove the children, do the free */
     sib_loop(chld, tmp,
       for (size_t i=tmp->children.used; i > 0; i--)
-        _sc_unlink(tmp, tmp->children.chunks[i-1], false);
+        unlink(tmp, tmp->children.chunks[i-1], false);
 
       free(tmp->children.chunks);
       free(tmp->parents.chunks);
@@ -230,7 +230,7 @@ _sc_incref(void *parent, void *child, const char *location)
 void
 _sc_decref(void *parent, void *child, const char *location)
 {
-  _sc_unlink(GET_CHUNK(parent), GET_CHUNK(child), true);
+  unlink(GET_CHUNK(parent), GET_CHUNK(child), true);
 }
 
 void *
