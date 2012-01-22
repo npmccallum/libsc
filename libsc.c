@@ -55,7 +55,7 @@ struct chunk {
   chunk  *prev;
   chunk  *next;
   size_t  size;
-  char   *name;
+  char   *tag;
   scFree  destructor;
   uint8_t flags;
 };
@@ -154,7 +154,7 @@ _sc_calloc(void *parent, size_t size, size_t count,
   memset(chnk, 0, sizeof(chunk));
 
   chnk->size = size * count;
-  chnk->name = (char*) tag;
+  chnk->tag = (char*) tag;
   tmp = sc_incref(parent, chnk ? chnk + 1 : NULL);
 
   if (!tmp)
@@ -303,10 +303,10 @@ sc_tag_set(void *mem, const char *fmt, ...)
   if (!tmp)
     return false;
 
-  if (chnk->name && chnk->flags & SC_FLAGS_TAG_ALLOCATED)
-    sc_decref(mem, chnk->name);
+  if (chnk->tag && chnk->flags & SC_FLAGS_TAG_ALLOCATED)
+    sc_decref(mem, chnk->tag);
 
-  chnk->name = tmp;
+  chnk->tag = tmp;
   chnk->flags |= SC_FLAGS_TAG_ALLOCATED;
   return true;
 }
@@ -318,10 +318,10 @@ sc_tag_set_const(void *mem, const char *tag)
   if (!chnk)
     return false;
 
-  if (chnk->name && chnk->flags & SC_FLAGS_TAG_ALLOCATED)
-    sc_decref(mem, chnk->name);
+  if (chnk->tag && chnk->flags & SC_FLAGS_TAG_ALLOCATED)
+    sc_decref(mem, chnk->tag);
 
-  chnk->name = (char*) tag;
+  chnk->tag = (char*) tag;
   chnk->flags &= ~SC_FLAGS_TAG_ALLOCATED;
   return true;
 }
@@ -330,7 +330,7 @@ const char *
 sc_tag_get(void *mem)
 {
   chunk *chnk = GET_CHUNK(mem);
-  return chnk ? chnk->name : NULL;
+  return chnk ? chnk->tag : NULL;
 }
 
 char *
