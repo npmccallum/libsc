@@ -101,7 +101,6 @@ pop(link *lnk, chunk *chnk)
   return false;
 }
 
-
 #define sib_loop(chnk, tmp, code) \
   for (chunk *step_, *tmp = chnk->prev; tmp; tmp = step_) { \
     step_ = tmp->prev; \
@@ -141,20 +140,6 @@ _sc_unlink(chunk *prnt, chunk *chld, bool bothsides)
     );
   }
 }
-
-#define domalloc(sz, parent, zero, err) \
-  chunk *chnk = (chunk*) malloc(sizeof(chunk) + (sz)); \
-  if (!chnk) { err; } \
-  memset(chnk, 0, sizeof(chunk)); \
-  chnk->size = sz; \
-  void *tmp = mem::_incref(parent, GET_ALLOC(chnk)); \
-  if (!tmp) { \
-    free(chnk); \
-    err; \
-  } \
-  if (zero) \
-    memset(tmp, 0, sz); \
-  return tmp
 
 void *
 _sc_calloc(void *parent, size_t size, size_t count,
