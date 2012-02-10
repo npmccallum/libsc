@@ -56,6 +56,11 @@ typedef bool (*scForEach)(void *parent, void *child, void *data);
 #define sc_size_items(m)        (sc_size(m) / sc_size_item(m))
 #define sc_steal(p, m)          ((__typeof__(m)) _sc_steal(p, m))
 #define sc_destructor_set(m, d) _sc_destructor_set(m, (memFree) d)
+#define sc_ensure(m, t)         ((t*) sc_tag_get(m) \
+                                    ? (!strcmp(sc_tag_get(m), __str(t)) \
+                                        ? m \
+                                        : NULL) \
+                                    : NULL)
 
 void *
 _sc_calloc(void *parent, size_t size, size_t count,
