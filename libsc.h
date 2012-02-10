@@ -51,7 +51,7 @@ typedef bool (*scForEach)(void *parent, void *child, void *data);
 #define sc_resizea(m, c)        _sc_resizea(m, sizeof(__typeof__(**m)), c)
 #define sc_resizea0(m, c)       _sc_resizea0(m, sizeof(__typeof__(**m)), c)
 #define sc_incref(p, m)         ((__typeof__(m)) _sc_incref(p, m, __loc__))
-#define sc_decref(p, m)         _sc_decref(p, m, __loc__);
+#define sc_decref(p, m)         _sc_decref(p, m, __loc__)
 #define sc_size_item(m)         sizeof(__typeof__(*m))
 #define sc_size_items(m)        (sc_size(m) / sc_size_item(m))
 #define sc_steal(p, m)          ((__typeof__(m)) _sc_steal(p, m))
