@@ -38,7 +38,6 @@ extern "C"
 
 
 typedef void (*scFree)(void *);
-typedef bool (*scForEach)(void *parent, void *child, void *data);
 
 #define sc_new(p, t)            ((t*) sc_calloc(p, sizeof(t), 1, __str(t)))
 #define sc_new0(p, t)           ((t*) sc_calloc0(p, sizeof(t), 1, __str(t)))
