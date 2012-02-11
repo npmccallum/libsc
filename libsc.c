@@ -56,7 +56,7 @@ struct chunk {
   chunk  *next;
   size_t  size;
   char   *tag;
-  scFree  destructor;
+  scFree *destructor;
   uint8_t flags;
 };
 
@@ -248,7 +248,7 @@ _sc_steal(void *parent, void *child)
 }
 
 void
-_sc_destructor_set(void *mem, scFree destructor)
+_sc_destructor_set(void *mem, scFree *destructor)
 {
   chunk *chnk = GET_CHUNK(mem);
   if (chnk)

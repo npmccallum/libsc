@@ -36,8 +36,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-
-typedef void (*scFree)(void *);
+typedef void
+scFree(void *);
 
 #define sc_new(p, t)            ((t*) sc_calloc(p, sizeof(t), 1, __str(t)))
 #define sc_new0(p, t)           ((t*) sc_calloc0(p, sizeof(t), 1, __str(t)))
@@ -54,7 +54,7 @@ typedef void (*scFree)(void *);
 #define sc_size_item(m)         sizeof(__typeof__(*m))
 #define sc_size_items(m)        (sc_size(m) / sc_size_item(m))
 #define sc_steal(p, m)          ((__typeof__(m)) _sc_steal(p, m))
-#define sc_destructor_set(m, d) _sc_destructor_set(m, (scFree) d)
+#define sc_destructor_set(m, d) _sc_destructor_set(m, (scFree*) d)
 #define sc_ensure(m, t)         ((t*) sc_tag_get(m) \
                                     ? (!strcmp(sc_tag_get(m), __str(t)) \
                                         ? m \
@@ -85,7 +85,7 @@ void *
 _sc_steal(void *parent, void *child);
 
 void
-_sc_destructor_set(void *mem, scFree destructor);
+_sc_destructor_set(void *mem, scFree *destructor);
 
 void
 sc_group(void *cousin, void *mem);
