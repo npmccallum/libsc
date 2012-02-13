@@ -24,7 +24,7 @@ local:
 
 LIBSC_0.2 {
 global:
-        _sc_ensure;
+        sc_ensure_tag;
 local:
         *;
 };

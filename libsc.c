@@ -256,7 +256,7 @@ _sc_destructor_set(void *mem, scFree *destructor)
 }
 
 void *
-_sc_ensure(void *mem, const char *tag)
+sc_ensure_tag(void *mem, const char *tag)
 {
   const char *t = sc_tag_get(mem);
 

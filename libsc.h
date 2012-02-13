@@ -55,7 +55,7 @@ scFree(void *);
 #define sc_size_items(m)        (sc_size(m) / sc_size_item(m))
 #define sc_steal(p, m)          ((__typeof__(m)) _sc_steal(p, m))
 #define sc_destructor_set(m, d) _sc_destructor_set(m, (scFree*) d)
-#define sc_ensure(m, t)         ((t*) _sc_ensure(m, __str(t)))
+#define sc_ensure(m, t)         ((t*) sc_ensure_tag(m, __str(t)))
 
 void *
 _sc_calloc(void *parent, size_t size, size_t count,
@@ -84,7 +84,7 @@ void
 _sc_destructor_set(void *mem, scFree *destructor);
 
 void *
-_sc_ensure(void *mem, const char *tag);
+sc_ensure_tag(void *mem, const char *tag);
 
 void
 sc_group(void *cousin, void *mem);
