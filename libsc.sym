@@ -22,4 +22,9 @@ local:
 	*;
 };
 
-
+LIBSC_0.2 {
+global:
+        _sc_ensure;
+local:
+        *;
+};

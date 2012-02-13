@@ -255,6 +255,17 @@ _sc_destructor_set(void *mem, scFree *destructor)
     chnk->destructor = destructor;
 }
 
+void *
+_sc_ensure(void *mem, const char *tag)
+{
+  const char *t = sc_tag_get(mem);
+
+  if (!t || !tag || strcmp(t, tag))
+    return NULL;
+
+  return mem;
+}
+
 void
 sc_group(void *cousin, void *mem)
 {
