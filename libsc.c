@@ -235,16 +235,27 @@ _sc_decref(void *parent, void *child, const char *location)
 }
 
 void *
-_sc_steal(void *parent, void *child)
+_sc_steal(void *parent, void *child, void *pold)
 {
   chunk *chld = GET_CHUNK(child);
-  if (!chld || chld->parents.used != 1)
+  chunk *prnt = GET_CHUNK(pold);
+  int i;
+
+  if (!chld || (pold && !prnt) || (!pold && chld->parents.used != 1))
     return NULL;
 
-  if (chld->parents.chunks[0])
-    pop(&chld->parents.chunks[0]->children, chld);
-  chld->parents.chunks[0] = GET_CHUNK(parent);
-  return child;
+  if (!pold)
+    prnt = chld->parents.chunks[0];
+
+  for (i = 0; i < chld->parents.used; i++) {
+    if (chld->parents.chunks[i] == prnt) {
+      pop(&prnt->children, chld);
+      chld->parents.chunks[i] = GET_CHUNK(parent);
+      return child;
+    }
+  }
+
+  return NULL;
 }
 
 void
