@@ -175,13 +175,38 @@ _sc_calloc0(void *parent, size_t size, size_t count,
 bool
 _sc_resizea(void **mem, size_t size, size_t count)
 {
-  chunk *chnk = GET_CHUNK(mem ? *mem : NULL);
+  chunk *chnk;
+  size_t i, j;
+
+  chnk = GET_CHUNK(mem ? *mem : NULL);
   if (!chnk)
     return false;
 
   chunk *tmp = (chunk*) realloc(chnk, sizeof(chunk) + (size * count));
   if (!tmp)
     return false;
+
+  /* If the memory was reallocated, we have to update references */
+  if (tmp != chnk) {
+    /* Update parents */
+    for (i = 0; i < tmp->parents.used; i++)
+      for (j = 0; j < tmp->parents.chunks[i]->children.used; j++)
+        if (tmp->parents.chunks[i]->children.chunks[j] == chnk)
+          tmp->parents.chunks[i]->children.chunks[j] = tmp;
+
+    /* Update children */
+    for (i = 0; i < tmp->children.used; i++)
+        for (j = 0; j < tmp->children.chunks[i]->parents.used; j++)
+          if (tmp->children.chunks[i]->parents.chunks[j] == chnk)
+            tmp->children.chunks[i]->parents.chunks[j] = tmp;
+
+    /* Update cousins */
+    if (tmp->next)
+      tmp->next->prev = tmp;
+    if (tmp->prev)
+      tmp->prev->next = tmp;
+  }
+
 
   tmp->size = size * count;
   *mem = GET_ALLOC(tmp);
