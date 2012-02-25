@@ -333,6 +333,43 @@ sc_size(void *mem)
   return 0;
 }
 
+
+size_t
+sc_size_parents_tag(void *mem, const char *tag)
+{
+  chunk *chnk = GET_CHUNK(mem);
+  if (!chnk)
+    return 0;
+
+  if (!tag)
+    return chnk->parents.used;
+
+  size_t i, count;
+  for (i=0, count=0; i < chnk->parents.used; i++)
+    if (!strcmp(chnk->parents.chunks[i]->tag, tag))
+      count++;
+
+  return count;
+}
+
+size_t
+sc_size_children_tag(void *mem, const char *tag)
+{
+  chunk *chnk = GET_CHUNK(mem);
+  if (!chnk)
+    return 0;
+
+  if (!tag)
+    return chnk->children.used;
+
+  size_t i, count;
+  for (i=0, count=0; i < chnk->children.used; i++)
+    if (!strcmp(chnk->children.chunks[i]->tag, tag))
+      count++;
+
+  return count;
+}
+
 bool
 sc_tag_set(void *mem, const char *fmt, ...)
 {
