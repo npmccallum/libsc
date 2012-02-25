@@ -26,10 +26,7 @@
 
 #define __str__(s) #s
 #define __str(s) __str__(s)
-
-#ifndef __location__
 #define __loc__ __FILE__ ":" __str(__LINE__)
-#endif
 
 #ifdef __cplusplus
 extern "C"
