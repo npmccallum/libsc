@@ -1,4 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+SUBDIRS = . tests
+
 AM_MAKEFLAGS = --no-print-directory
 AM_CFLAGS = \
 	-Wall \

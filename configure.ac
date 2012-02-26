@@ -35,7 +35,7 @@ my_CFLAGS="-Wall \
 -Wformat-security -Wtype-limits"
 AC_SUBST([my_CFLAGS])
 
-AC_CONFIG_FILES([Makefile libsc.pc])
+AC_CONFIG_FILES([Makefile tests/Makefile libsc.pc])
 
 AC_OUTPUT
 AC_MSG_RESULT([
