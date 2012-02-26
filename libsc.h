@@ -51,8 +51,8 @@ scFree(void *);
 
 #define sc_incref(p, m)       ((__typeof__(m)) _sc_incref(p, m, __loc__))
 #define sc_decref(p, m)       _sc_decref(p, m, __loc__)
-#define sc_steal(p, m)              sc_steal_old(p, m, NULL)
-#define sc_steal_old(p, m, o)       ((__typeof__(m)) _sc_steal(p, m, o))
+#define sc_steal(p, m)        sc_steal_old(p, m, NULL)
+#define sc_steal_old(p, m, o) ((__typeof__(m)) _sc_steal(p, m, o, __loc__))
 
 #define sc_size_item(m)             sizeof(*(m))
 #define sc_size_items(m)            (sc_size(m) / sc_size_item(m))
@@ -84,7 +84,7 @@ void
 _sc_decref(void *parent, void *child, const char *location);
 
 void *
-_sc_steal(void *parent, void *child, void *pold);
+_sc_steal(void *parent, void *child, void *pold, const char *location);
 
 void
 _sc_destructor_set(void *mem, scFree *destructor);
