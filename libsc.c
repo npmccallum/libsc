@@ -464,7 +464,7 @@ sc_vasprintf(void *parent, const char *fmt, va_list ap)
   size = vsnprintf(NULL, 0, fmt, apc);
   va_end(apc);
 
-  if (size <= 0 || !(str = sc_newa(parent, char, size)))
+  if (size <= 0 || !(str = sc_newa(parent, char, size + 1)))
     return NULL;
 
   vsnprintf(str, size + 1, fmt, ap);
