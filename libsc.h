@@ -38,10 +38,6 @@ scFree(void *);
 
 #define sc_new(p, t)                ((t*) sc_calloc(p, sizeof(t), 1, __str(t)))
 #define sc_new0(p, t)               ((t*) sc_calloc0(p, sizeof(t), 1, __str(t)))
-#define sc_newp(p, m)               ((*(m) = sc_new(p, __typeof__(**(m)))))
-#define sc_newp0(p, m)              ((*(m) = sc_new0(p, __typeof__(**(m)))))
-#define sc_newpa(p, m, c)           ((*(m) = sc_newa(p, __typeof__(**(m)), c)))
-#define sc_newpa0(p, m, c)          ((*(m) = sc_newa0(p, __typeof__(**(m)), c)))
 #define sc_malloc(p, s, n)          sc_calloc(p, s, 1, n)
 #define sc_malloc0(p, s, n)         sc_calloc0(p, s, 1, n)
 #define sc_newa(p, t, c)            ((t*) sc_calloc(p, sizeof(t), c, __str(t)))
