@@ -25,6 +25,8 @@ local:
 LIBSC_0.2 {
 global:
         sc_ensure_tag;
+        sc_size_parents_tag;
+        sc_size_children_tag;
 local:
         *;
 };
