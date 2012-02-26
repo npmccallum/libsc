@@ -382,7 +382,7 @@ sc_tag_set(void *mem, const char *fmt, ...)
     return false;
 
   va_start(ap, fmt);
-  tmp = sc_vasprintf(chnk, fmt, ap);
+  tmp = sc_vasprintf(mem, fmt, ap);
   va_end(ap);
   if (!tmp)
     return false;
