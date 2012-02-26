@@ -1,7 +1,7 @@
 LIBSC_0.1 {
 global:
-        _sc_calloc;
-        _sc_calloc0;
+        _sc_alloc;
+        _sc_alloc0;
         _sc_resizea;
         _sc_resizea0;
         _sc_incref;

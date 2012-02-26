@@ -19,6 +19,7 @@
 
 #include "libsc.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -50,6 +51,7 @@ struct link {
 };
 
 struct chunk {
+  void   *base;
   link    parents;
   link    children;
   chunk  *prev;
@@ -136,55 +138,108 @@ unlink(chunk *prnt, chunk *chld, bool bothsides)
 
       free(tmp->children.chunks);
       free(tmp->parents.chunks);
-      free(tmp);
+      free(tmp->base);
     );
   }
 }
 
+static chunk *
+_malloc(size_t size)
+{
+  void *tmp;
+
+  tmp = malloc(sizeof(chunk) + size);
+  if (!tmp)
+    return NULL;
+
+  memset(tmp, 0, sizeof(chunk));
+  ((chunk*) tmp)->base = tmp;
+  return (chunk*) tmp;
+}
+
+static chunk *
+_memalign(size_t size, size_t align)
+{
+  chunk *chnk = NULL;
+  size_t header = 0;
+  int err = 0;
+  void *tmp;
+
+  while (header < sizeof(chunk))
+    header += align;
+
+  err = posix_memalign(&tmp, align, header + size);
+  if (err != 0) {
+    errno = err;
+    return NULL;
+  }
+
+  /* Chunk data goes at the end of the header */
+  chnk = (chunk*) (((uintptr_t) tmp) + header - sizeof(chunk));
+  memset(chnk, 0, sizeof(chunk));
+  chnk->base = tmp;
+  return chnk;
+}
+
 void *
-_sc_calloc(void *parent, size_t size, size_t count,
+_sc_alloc(void *parent, size_t size, size_t count, size_t align,
            const char *tag, const char *location)
 {
   chunk *chnk = NULL;
-  void *tmp = NULL;
+  void *tmp;
 
-  chnk = (chunk*) malloc(sizeof(chunk) + (size * count));
-  if (!chnk)
-    return NULL;
-  memset(chnk, 0, sizeof(chunk));
+  if (align == 0)
+    chnk = _malloc(size * count);
+  else
+    chnk = _memalign(size * count, align);
 
   chnk->size = size * count;
   chnk->tag = (char*) tag;
-  tmp = sc_incref(parent, chnk ? chnk + 1 : NULL);
+  tmp = sc_incref(parent, GET_ALLOC(chnk));
 
   if (!tmp)
-    free(chnk);
+    free(chnk->base);
   return tmp;
 }
 
 void *
-_sc_calloc0(void *parent, size_t size, size_t count,
+_sc_alloc0(void *parent, size_t size, size_t count, size_t align,
             const char *tag, const char *location)
 {
-  void *tmp = _sc_calloc(parent, size, count, tag, location);
+  void *tmp = _sc_alloc(parent, size, count, align, tag, location);
   if (tmp)
     memset(tmp, 0, size * count);
   return tmp;
 }
 
 bool
-_sc_resizea(void **mem, size_t size, size_t count)
+_sc_resizea(void **mem, size_t size, size_t count, size_t align)
 {
-  chunk *chnk;
+  chunk *chnk, *tmp;
   size_t i, j;
 
   chnk = GET_CHUNK(mem ? *mem : NULL);
   if (!chnk)
     return false;
 
-  chunk *tmp = (chunk*) realloc(chnk, sizeof(chunk) + (size * count));
-  if (!tmp)
-    return false;
+  if (align == 0) {
+    tmp = (chunk*) realloc(chnk, sizeof(chunk) + (size * count));
+    if (!tmp)
+      return false;
+
+    tmp->base = tmp;
+  } else {
+    void *tmpbase;
+
+    tmp = _memalign(size * count, align);
+    if (!tmp)
+      return false;
+
+    tmpbase = tmp->base;
+    memcpy(tmp, chnk, chnk->size + sizeof(chunk));
+    tmp->base = tmpbase;
+    free(chnk->base);
+  }
 
   /* If the memory was reallocated, we have to update references */
   if (tmp != chnk) {
@@ -196,9 +251,9 @@ _sc_resizea(void **mem, size_t size, size_t count)
 
     /* Update children */
     for (i = 0; i < tmp->children.used; i++)
-        for (j = 0; j < tmp->children.chunks[i]->parents.used; j++)
-          if (tmp->children.chunks[i]->parents.chunks[j] == chnk)
-            tmp->children.chunks[i]->parents.chunks[j] = tmp;
+      for (j = 0; j < tmp->children.chunks[i]->parents.used; j++)
+        if (tmp->children.chunks[i]->parents.chunks[j] == chnk)
+          tmp->children.chunks[i]->parents.chunks[j] = tmp;
 
     /* Update cousins */
     if (tmp->next)
@@ -207,21 +262,20 @@ _sc_resizea(void **mem, size_t size, size_t count)
       tmp->prev->next = tmp;
   }
 
-
   tmp->size = size * count;
   *mem = GET_ALLOC(tmp);
   return true;
 }
 
 bool
-_sc_resizea0(void **mem, size_t size, size_t count)
+_sc_resizea0(void **mem, size_t size, size_t count, size_t align)
 {
   chunk *chnk = GET_CHUNK(mem ? *mem : NULL);
   if (!chnk)
     return false;
   size_t oldsize = chnk->size;
 
-  if (!_sc_resizea(mem, size, count))
+  if (!_sc_resizea(mem, size, count, align))
     return false;
 
   chnk = GET_CHUNK(mem ? *mem : NULL);

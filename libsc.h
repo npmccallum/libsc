@@ -46,10 +46,12 @@ scFree(void *);
 #define sc_malloc0(p, s, n)         sc_calloc0(p, s, 1, n)
 #define sc_newa(p, t, c)            ((t*) sc_calloc(p, sizeof(t), c, __str(t)))
 #define sc_newa0(p, t, c)           ((t*) sc_calloc0(p, sizeof(t), c, __str(t)))
-#define sc_calloc(p, s, c, n)       _sc_calloc(p, s, c, n, __loc__)
-#define sc_calloc0(p, s, c, n)      _sc_calloc0(p, s, c, n, __loc__)
-#define sc_resizea(m, c)            _sc_resizea((void**) m, sizeof(**(m)), c)
-#define sc_resizea0(m, c)           _sc_resizea0((void**) m, sizeof(**(m)), c)
+#define sc_calloc(p, s, c, n)       _sc_alloc(p, s, c, 0, n, __loc__)
+#define sc_calloc0(p, s, c, n)      _sc_alloc0(p, s, c, 0, n, __loc__)
+#define sc_memalign(p, a, s, n)     _sc_alloc(p, s, 1, a, n, __loc__)
+#define sc_memalign0(p, a, s, n)    _sc_alloc0(p, s, 1, a, n, __loc__)
+#define sc_resizea(m, c)            _sc_resizea((void**) m, sizeof(**(m)), c, 0)
+#define sc_resizea0(m, c)           _sc_resizea0((void**) m, sizeof(**(m)), c, 0)
 #define sc_incref(p, m)             ((__typeof__(m)) _sc_incref(p, m, __loc__))
 #define sc_decref(p, m)             _sc_decref(p, m, __loc__)
 #define sc_size_item(m)             sizeof(*(m))
@@ -64,18 +66,18 @@ scFree(void *);
 #define sc_ensure(m, t)             ((t*) sc_ensure_tag(m, __str(t)))
 
 void *
-_sc_calloc(void *parent, size_t size, size_t count,
-           const char *tag, const char *location);
+_sc_alloc(void *parent, size_t size, size_t count, size_t align,
+          const char *tag, const char *location);
 
 void *
-_sc_calloc0(void *parent, size_t size, size_t count,
-            const char *tag, const char *location);
+_sc_alloc0(void *parent, size_t size, size_t count, size_t align,
+           const char *tag, const char *location);
 
 bool
-_sc_resizea(void **mem, size_t size, size_t count);
+_sc_resizea(void **mem, size_t size, size_t count, size_t align);
 
 bool
-_sc_resizea0(void **mem, size_t size, size_t count);
+_sc_resizea0(void **mem, size_t size, size_t count, size_t align);
 
 void *
 _sc_incref(void *parent, void *child, const char *location);
