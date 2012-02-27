@@ -21,8 +21,7 @@ include_HEADERS = libsc.h
 lib_LTLIBRARIES = libsc.la
 
 libsc_la_SOURCES = libsc.c
-libsc_la_LDFLAGS = $(AM_LDFLAGS) -version-info 0:0:0 \
-                   -Wl,--version-script=$(top_srcdir)/libsc.sym
+libsc_la_LDFLAGS = -version-info 0:0:0 -export-symbols-regex '^_?sc_'
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libsc.pc
