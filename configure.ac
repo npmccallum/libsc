@@ -1,6 +1,6 @@
 dnl Initialize autoconf
 AC_PREREQ(2.60)
-AC_INIT([libsc], [0.1], [nathaniel@themccallums.org], [libsc],
+AC_INIT([libsc], [0.2], [nathaniel@themccallums.org], [libsc],
         [https://github.com/npmccallum/libsc])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CANONICAL_SYSTEM
