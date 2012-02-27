@@ -16,9 +16,11 @@ AM_PROG_CC_C_O
 dnl Initialize libtool
 LT_INIT
 
+dnl Output files
 AC_CONFIG_FILES([Makefile tests/Makefile libsc.pc])
-
 AC_OUTPUT
+
+dnl Print details
 AC_MSG_RESULT([
         $PACKAGE $VERSION
         =====
