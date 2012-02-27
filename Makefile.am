@@ -15,7 +15,6 @@ AM_CFLAGS = -g \
             -Wformat-security \
             -ffunction-sections \
             -fdata-sections
-EXTRA_DIST = src/libsc.sym
 
 include_HEADERS = libsc.h
 lib_LTLIBRARIES = libsc.la
