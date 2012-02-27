@@ -12,8 +12,8 @@ AC_PROG_CC_STDC
 AC_PROG_LIBTOOL
 
 dnl Initialize automake
-AM_INIT_AUTOMAKE([check-news foreign 1.11 -Wall -Wno-portability silent-rules tar-pax no-dist-gzip dist-xz subdir-objects])
-AM_SILENT_RULES([yes])
+AM_INIT_AUTOMAKE([check-news foreign 1.10 -Wall -Wno-portability silent-rules subdir-objects])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AM_PROG_CC_C_O 
 
 dnl Initialize libtool
