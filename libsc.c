@@ -192,6 +192,8 @@ _sc_alloc(void *parent, size_t size, size_t count, size_t align,
     chnk = _malloc(size * count);
   else
     chnk = _memalign(size * count, align);
+  if (!chnk)
+    return NULL;
 
   chnk->size = size * count;
   chnk->tag = (char*) tag;
